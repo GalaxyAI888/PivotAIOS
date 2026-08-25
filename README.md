@@ -40,10 +40,9 @@ PivotAIOS（天枢大模型操作系统）是以多模态大模型为核心的�
 
 ### 核心特性
 
-- **全栈开源的智能底座**：提供统一的操作系统内核和开发框架、编排调度系统、开发环境，支持 k8s、Ray、Docker，助力 AI 应用快速集成开发。
-- **性能优化的推理引擎**：支持经过优化的多推理引擎，如 llama.cpp、vLLM、Triton、BentoML 等，支持 Transformer、Diffusion、MOE、Lora 等主流的算法架构。
+- **全栈开源的智能底座**：提供统一的操作系统内核和开发框架、编排调度系统、开发环境，支持 k8s、Docker，助力 AI 应用快速集成开发。
+- **性能优化的推理引擎**：支持经过优化的多推理引擎，如 llama.cpp、vLLM、funasr 等，支持 Transformer、Diffusion、MOE、Lora 等主流的算法架构。
 - **包含丰富的开源模型**：模型市场预集成开源模型（如 Llama3、Qwen、DeepSeek、SD、FLUX、Whisper 等），覆盖大语言模型、文生图扩散模型、STT 与 TTS 语音模型、多模态模型等，支持百亿至万亿级参数模型。
-- **完善的开源工具链**：集成 Langchain、dify、RagFlow、Milvus 等工具链和中间件，可帮助开发者极大提高 AI 应用开发效率。
 - **多智能体协同引擎**：通过 MCP 协议实现自然语言处理（NLP）、计算机视觉（CV）、语音交互等能力的协同调用。例如，文本生成模型可联动文生图模型完成系列漫画的制作。
 - **广泛的兼容性**：支持 Apple Mac、Windows 和 Linux 不同的 OS 和 NVIDIA、AMD GPU，轻松添加异构 GPU 资源。
 - **OpenAI 兼容 API**：提供兼容 OpenAI 标准的 API 服务。
