@@ -1,0 +1,57 @@
+diff --git a/examples/openai_api/server.py b/examples/openai_api/server.py
+index 47a324c..eb9aa54 100644
+--- a/examples/openai_api/server.py
++++ b/examples/openai_api/server.py
+@@ -38,24 +38,16 @@ MODEL_CONFIGS = {
+         "vad_model": "fsmn-vad",
+         "vad_kwargs": {"max_single_segment_time": 30000},
+     },
+-    "paraformer": {
+-        "model": "paraformer-zh",
+-        "vad_model": "fsmn-vad",
+-        "punc_model": "ct-punc",
+-    },
+-    "paraformer-en": {
+-        "model": "paraformer-en",
+-        "vad_model": "fsmn-vad",
+-    },
+     "fun-asr-nano": {
+         "model": "FunAudioLLM/Fun-ASR-Nano-2512",
+-        "hub": "hf",
++        "hub": "ms",
+         "trust_remote_code": True,
+         "vad_model": "fsmn-vad",
+         "vad_kwargs": {"max_single_segment_time": 30000},
+     },
+ }
+ 
++from funasr.utils.postprocess_utils import rich_transcription_postprocess
+ 
+ def load_model(model_name: str):
+     """Load a model and store in registry."""
+@@ -121,14 +113,23 @@ async def transcribe(
+         asr_model = load_model(model)
+         t0 = time.time()
+ 
+-        generate_kwargs = {"input": tmp_path, "batch_size": 1}
++        generate_kwargs = {"input": tmp_path, "batch_size": 1, "use_itn": True}
+         if language:
+             generate_kwargs["language"] = language
+ 
+         result = asr_model.generate(**generate_kwargs)
+         elapsed = time.time() - t0
+ 
+-        text = clean_text(result[0]["text"])
++        # 3. 使用后处理函数转换结果
++        if result and len(result) > 0 and 'text' in result[0]:
++            raw_text = result[0]['text']
++            formatted_text = rich_transcription_postprocess(raw_text)  # 带标点符号
++            #print(formatted_text)
++            #print("xxxxxxxxx")
++            text = clean_text(formatted_text)
++            #print(text)
++        else:
++            text = clean_text(result[0]["text"])
+ 
+         if response_format == "verbose_json":
+             segments = []

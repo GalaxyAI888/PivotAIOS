@@ -1,12 +1,23 @@
-docker build -t sd3.5-cuda12.8-stablediffusioncpp:1.0.0 .
+git clone https://github.com/leejet/stable-diffusion.cpp --depth 1
+cd stable-diffusion.cpp
+git submodule update --init
+git submodule update
+docker build -f docker/Dockerfile.cuda -t sd-server-cuda12.6-20260823:1.0.0 .
 
-docker run -d \
-  --name sd35 \
-  --gpus all \
-  -v /opt/data/output/sd35:/app/output \
-  -v /opt/data/models:/app/models:ro \ 
-  -p 7860:7860 \ 
-  sd3.5-cuda12.8-stablediffusioncpp:1.0.0
+docker运行验证：
+docker run --name sd3 --gpus all \
+           -v /opt/data/models:/models \
+           -v /opt/data/output/sd35:/app/output \
+           -p 7860:7860 -it --entrypoint /bin/bash \
+           sd-server-cuda12.6-20260823:1.0.0
+
+/app/sd-server -m  models/stable-diffusion-3.5-sdcpp/sd3.5_medium.safetensors \
+               --clip_l models/stable-diffusion-3.5-sdcpp/clip_l.safetensors \
+               --clip_g models/stable-diffusion-3.5-sdcpp/clip_g.safetensors \
+               --t5xxl models/stable-diffusion-3.5-sdcpp/t5xxl_fp8_e4m3fn.safetensors  \
+               --sampling-method euler -v \
+               --clip-on-cpu --listen-ip 0.0.0.0 --listen-port 7860
+
 
 docker run -d \
   --name sd35 \

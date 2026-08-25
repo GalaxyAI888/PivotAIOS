@@ -1,0 +1,33 @@
+git clone https://github.com/modelscope/FunASR.git
+cd FunASR/examples/openai_api
+docker build -t funasr-stt-server:v1.4.3 .
+
+docker run -d \
+  --name funASR-stt-server1 \
+  --gpus all \
+  -p 8000:8000\
+  -v /opt/data/models:/models:ro \
+  -w /app \
+  funasr-stt-server:v1.4.3
+  
+
+docker run -it \
+  --name funASR-stt-server-gpu1 \
+  --gpus all \
+  -p 8000:8000 \
+  -v /opt/data/models:/root/.cache/modelscope/models \
+  -w /app \
+  -e FUNASR_DEVICE=cuda \
+  -e FUNASR_MODEL=sensevoice \
+  -e FUNASR_PORT=8000 \
+  funasr-stt-server:v1.4.3 \
+  /bin/sh
+
+docker cp server.py funASR-stt-server-gpu1:/app/server.py
+python server.py --host 0.0.0.0 --port 8000 --device cuda --model sensevoice
+
+
+测试：
+curl http://127.0.0.1:8000/v1/audio/transcriptions   -F file=@sample.wav   -F model=sensevoice  -F use_itn=true  -F response_format=verbose_json
+
+docker stop voxbox1 && docker rm voxbox1 && docker rmi voxbox-stt-server:latest
